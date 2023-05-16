@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>Youtube</title>
+  </head>
+  <body>
+    <h1>Youtube</h1>
+    <div id="contador"></div>
+    <script>
+      function incrementarContador(pagina) {
+        fetch("/incrementarContador", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ pagina: pagina }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              console.log("Contador incrementado para la página: ", pagina);
+            } else {
+              console.log("Error al incrementar el contador");
+            }
+          })
+          .catch((error) => {
+            console.log("Error en la solicitud: ", error);
+          });
+      }
+
+      function mostrarContador(pagina) {
+        fetch(`/obtenerContador?pagina=${pagina}`)
+          .then((response) => {
+            if (response.ok) {
+              return response.text();
+            } else {
+              throw new Error("Error al obtener el contador");
+            }
+          })
+          .then((contador) => {
+            document.getElementById(
+              "contador"
+            ).innerText = `Visitas: ${contador}`;
+          })
+          .catch((error) => {
+            console.log("Error en la solicitud: ", error);
+          });
+      }
+
+      // Llama a la función para incrementar el contador de visitas al cargar la página
+      window.addEventListener("DOMContentLoaded", function () {
+        const paginaActual = "youtube.com"; // Reemplaza con la página actual
+        incrementarContador(paginaActual);
+      });
+
+      // Llama a la función para obtener y mostrar el contador de visitas al cargar la página
+      window.addEventListener("DOMContentLoaded", function () {
+        const paginaActual = "youtube.com"; // Reemplaza con la página actual
+        mostrarContador(paginaActual);
+      });
+    </script>
+  </body>
+</html>
